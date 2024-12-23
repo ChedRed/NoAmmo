@@ -43,7 +43,7 @@ int main(int argc, char* argv[]) {
 
 
     TextObject Intro = TextObject("Please enter your username below:", Characters, A_Center, A_Bottom, WindowSize/2, {255, 255, 255, 255}, false);
-    TextObject Nameput = TextObject("", Characters, A_Center, A_Top, WindowSize/2, SDL_Color(255, 255, 255, 255), true);
+    TextObject Nameput = TextObject("", Characters, A_Center, A_Top, WindowSize/2, {255, 255, 255, 255}, true);
 
 
     while (run){

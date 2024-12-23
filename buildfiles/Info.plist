@@ -3,15 +3,15 @@
 <plist version="1.0">
 <dict>
     <key>CFBundleExecutable</key>
-    <string>noammo</string>
+    <string>No Ammo</string>
 	<key>CFBundleIconName</key>
 	<string>icon</string>
     <key>CFBundleIdentifier</key>
     <string>com.chedred</string>
     <key>CFBundleName</key>
-    <string>NoAmmo</string>
+    <string>No Ammo</string>
     <key>CFBundleDisplayName</key>
-    <string>NoAmmo</string>
+    <string>No Ammo</string>
     <key>CFBundleVersion</key>
     <string>1.0.0.0</string>
     <key>LSApplicationCategoryType</key>
