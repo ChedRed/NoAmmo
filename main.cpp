@@ -1,6 +1,11 @@
 #include "TextHelp.h"
+#include "entity.h"
 #include "player.h"
 #include "registry.h"
+#include "entity.h"
+#include <SDL3/SDL_surface.h>
+#include <SDL3/SDL_video.h>
+#include <iostream>
 #ifdef _WIN32
 #include <Windows.h>
 #endif
@@ -18,8 +23,9 @@ int TX, TY;
 
 bool run = true;
 Vector2 MousePos;
+iVector2 iMousePos;
 Vector2 MouseVel;
-std::string rpath = "./Resources/";
+std::string rpath = "./Resources/Content/";
 
 
 float deltime;
@@ -37,6 +43,7 @@ const bool * KeyStates = SDL_GetKeyboardState(NULL);
 Vector2 WindowSize = {960, 540};
 bool FullscreenMode = true;
 int Cursor = 1;
+float CursorScale = 1.5;
 
 
 int main(int argc, char* argv[]) {
@@ -47,8 +54,9 @@ int main(int argc, char* argv[]) {
     #endif
     std::string path = SDL_GetBasePath() + rpath;
 
+
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_GAMEPAD);
-    SDL_CreateWindowAndRenderer("No Ammo", WindowSize.x, WindowSize.y, SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY, &Window, &Render);
+    SDL_CreateWindowAndRenderer("No Ammo", WindowSize.x, WindowSize.y, SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY | SDL_WINDOW_MOUSE_RELATIVE_MODE, &Window, &Render);
     SDL_SetWindowMinimumSize(Window, WindowSize.x, WindowSize.y);
     SDL_StartTextInput(Window);
     SDL_HideCursor();
@@ -56,7 +64,7 @@ int main(int argc, char* argv[]) {
 
 
     // Setup textures
-    SDL_Surface * LoadS = SDL_LoadBMP((path+"cursor.bmp").c_str());
+    SDL_Surface * LoadS = SDL_LoadBMP((path+"/Textures/cursor.bmp").c_str());
     SDL_Texture * LoadedMouse = SDL_CreateTextureFromSurface(Render, LoadS);
     float fw, fh;
     SDL_GetTextureSize(LoadedMouse, &fw, &fh);
@@ -70,19 +78,24 @@ int main(int argc, char* argv[]) {
         SDL_RenderTexture(Render, LoadedMouse, &Copy, &Result);
         SDL_SetRenderTarget(Render, NULL);
     }
+    Result.w *= CursorScale;
+    Result.h *= CursorScale;
+    SDL_SetTextureScaleMode(Mouse, SDL_SCALEMODE_LINEAR);
 
 
     // Setup font
     TTF_Init();
-    TTF_Font * Font = TTF_OpenFont((path+"Font.ttf").c_str(), 20);
-    TextCharacters CharInit = TextCharacters(Render, Font);
-    TextCharacters * Characters = &CharInit;
+    TTF_Font * Font = TTF_OpenFont((path+"/Fonts/Font.ttf").c_str(), 20);
+    TextCharacters * Characters = CreaTextCharacters(Render, Font);
     // TextObject Intro = TextObject("Please enter your username below:", Characters, A_Center, A_Bottom, WindowSize/2, {255, 255, 255, 255}, false);
     // TextObject Nameput = TextObject("", Characters, A_Center, A_Top, WindowSize/2, {255, 255, 255, 255}, true);
 
 
     Registry * ItemRegistry = CreateRegistry();
     Registry * EntityRegistry = CreateRegistry();
+
+
+    RegEntity Player = RegEntity(EntityRegistry, "::player", "Player");
 
 
     while (run){

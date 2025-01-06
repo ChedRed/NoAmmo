@@ -12,7 +12,6 @@ Registry& operator=(const Registry&) = delete;
 
 
 Registry::Registry(){
-
 }
 
 

@@ -1,2 +1,2 @@
 CompileFlags:
-  Add: [-isystem, /usr/local/include, -std=c++2b, -ferror-limit=100]
+  Add: [-isystem, /usr/local/include, -std=c++2b, -ferror-limit=100, -Wno-c++11-narrowing]

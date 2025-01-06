@@ -23,6 +23,8 @@ SDL_Texture * GetCharacter(std::string character);
 float GetTotalLength(std::string characters);
 std::string KeepValid(std::string value);
 TTF_Font * GetFont();
+TextCharacters(const TextCharacters&) = delete;
+TextCharacters& operator=(const TextCharacters&) = delete;
 private:
 bool Locked;
 TTF_Font * Font;
@@ -30,6 +32,11 @@ std::string Charin;
 SDL_Renderer * Renderer;
 std::vector<SDL_Texture *> CharacTextures;
 };
+
+
+TextCharacters * CreaTextCharacters(SDL_Renderer * renderer, TTF_Font * font, bool locked = false, std::string characters = ""){
+    return new TextCharacters(renderer, font, locked, characters);
+}
 
 
 inline TextCharacters::TextCharacters(SDL_Renderer * renderer, TTF_Font * font, bool locked, std::string characters){

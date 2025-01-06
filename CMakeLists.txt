@@ -14,10 +14,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
 # Main executable
-
+string(APPEND CMAKE_CXX_FLAGS " -Wno-c++11-narrowing")
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     add_executable(NoAmmo MACOSX_BUNDLE main.cpp buildfiles/icon.icns)
-    set_target_properties(NoAmmo PROPERTIES OUTPUT_NAME "No Ammo" MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/buildfiles/Info.plist)
 else(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     add_executable(NoAmmo WIN32 main.cpp buildfiles/wicon.rc)
 endif()
@@ -37,19 +36,18 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 
 
     # Make directories for macos app
-    file(MAKE_DIRECTORY "${CMAKE_SOURCE_DIR}/build/No Ammo.app/Contents/MacOS")
-    file(COPY "${CMAKE_SOURCE_DIR}/buildfiles/Resources" "${CMAKE_SOURCE_DIR}/build/No Ammo.app/Contents")
+    file(MAKE_DIRECTORY "${CMAKE_SOURCE_DIR}/build/NoAmmo.app/Contents/MacOS")
+    file(COPY "${CMAKE_SOURCE_DIR}/buildfiles/Resources" DESTINATION "${CMAKE_SOURCE_DIR}/build/NoAmmo.app/Contents")
 
 
     # Add basic files to macos app
-    file(COPY ${CMAKE_SOURCE_DIR}/buildfiles/info.plist DESTINATION "${CMAKE_SOURCE_DIR}/build/No Ammo.app/Contents")
-    file(COPY ${CMAKE_SOURCE_DIR}/buildfiles/icon.icns DESTINATION "${CMAKE_SOURCE_DIR}/build/No Ammo.app/Contents/Resources")
-    file(COPY ${CMAKE_SOURCE_DIR}/buildfiles/Font.ttf DESTINATION "${CMAKE_SOURCE_DIR}/build/No Ammo.app/Contents/Resources")
+    file(COPY ${CMAKE_SOURCE_DIR}/buildfiles/info.plist DESTINATION "${CMAKE_SOURCE_DIR}/build/NoAmmo.app/Contents")
+    file(COPY ${CMAKE_SOURCE_DIR}/buildfiles/icon.icns DESTINATION "${CMAKE_SOURCE_DIR}/build/NoAmmo.app/Contents/Resources")
 
 
     # Add resources to macos app
-    file(COPY ${CMAKE_SOURCE_DIR}/../Cached/libSDL3.0.dylib DESTINATION "${CMAKE_SOURCE_DIR}/build/No Ammo.app/contents/Resources")
-    configure_file(${CMAKE_SOURCE_DIR}/../Cached/libSDL3_ttf.0.0.0.dylib "${CMAKE_SOURCE_DIR}/build/No Ammo.app/contents/Resources/libSDL3_ttf.0.dylib" COPYONLY)
+    file(COPY ${CMAKE_SOURCE_DIR}/../Cached/libSDL3.0.dylib DESTINATION "${CMAKE_SOURCE_DIR}/build/NoAmmo.app/contents/Resources")
+    configure_file(${CMAKE_SOURCE_DIR}/../Cached/libSDL3_ttf.0.0.0.dylib "${CMAKE_SOURCE_DIR}/build/NoAmmo.app/contents/Resources/libSDL3_ttf.0.dylib" COPYONLY)
 
 
 else(CMAKE_SYSTEM_NAME STREQUAL "Windows")
