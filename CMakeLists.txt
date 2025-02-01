@@ -14,11 +14,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
 # Main executable
-string(APPEND CMAKE_CXX_FLAGS " -Wno-c++11-narrowing")
+string(APPEND CMAKE_CXX_FLAGS " -Wno-narrowing")
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-    add_executable(NoAmmo MACOSX_BUNDLE main.cpp buildfiles/icon.icns)
+    add_executable(NoAmmo MACOSX_BUNDLE src/main.cpp buildfiles/icon.icns)
 else(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    add_executable(NoAmmo WIN32 main.cpp buildfiles/wicon.rc)
+    add_executable(NoAmmo  src/main.cpp buildfiles/wicon.rc) # WIN32
 endif()
 
 

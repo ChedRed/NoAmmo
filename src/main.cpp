@@ -1,11 +1,11 @@
 #include "TextHelp.h"
-#include "entity.h"
-#include "player.h"
-#include "registry.h"
-#include "entity.h"
-#include <SDL3/SDL_surface.h>
-#include <SDL3/SDL_video.h>
+#include "Registry/registry.h"
+#include "Registry/entity.h"
+#include "Vector2.h"
+#include <SDL3/SDL_error.h>
+#include <SDL3/SDL_mouse.h>
 #include <iostream>
+#include <filesystem>
 #ifdef _WIN32
 #include <Windows.h>
 #endif
@@ -25,7 +25,7 @@ bool run = true;
 Vector2 MousePos;
 iVector2 iMousePos;
 Vector2 MouseVel;
-std::string rpath = "./Resources/Content/";
+std::string SourcePath;
 
 
 float deltime;
@@ -46,17 +46,37 @@ int Cursor = 1;
 float CursorScale = 1.5;
 
 
+std::string SDL_GetBasePathNOS(){
+    std::string data = SDL_GetBasePath();
+    #ifdef _WIN32
+    std::string returnv;
+    for (int i = 0; i < data.length(); i++){
+        if (data[i] == '\\'){
+            returnv += "/";
+        }
+        else{
+            returnv += data[i];
+        }
+    }
+    return returnv;
+    #else
+    return data;
+    #endif
+}
+
+
 int main(int argc, char* argv[]) {
 
-
-    #ifdef __APPLE__
-    rpath = "."+rpath;
+    #ifdef _WIN32
+    SourcePath = "Resources/Content/";
+    #elifdef __APPLE__
+    rpath = "Content/";
     #endif
-    std::string path = SDL_GetBasePath() + rpath;
+    std::string ResourcePath = SDL_GetBasePathNOS() + SourcePath;
 
 
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_GAMEPAD);
-    SDL_CreateWindowAndRenderer("No Ammo", WindowSize.x, WindowSize.y, SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY | SDL_WINDOW_MOUSE_RELATIVE_MODE, &Window, &Render);
+    SDL_CreateWindowAndRenderer("No Ammo", WindowSize.x, WindowSize.y, SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY, &Window, &Render);
     SDL_SetWindowMinimumSize(Window, WindowSize.x, WindowSize.y);
     SDL_StartTextInput(Window);
     SDL_HideCursor();
@@ -64,8 +84,9 @@ int main(int argc, char* argv[]) {
 
 
     // Setup textures
-    SDL_Surface * LoadS = SDL_LoadBMP((path+"/Textures/cursor.bmp").c_str());
+    SDL_Surface * LoadS = SDL_LoadBMP((ResourcePath+"/Textures/UI/cursor.bmp").c_str());
     SDL_Texture * LoadedMouse = SDL_CreateTextureFromSurface(Render, LoadS);
+    SDL_DestroySurface(LoadS);
     float fw, fh;
     SDL_GetTextureSize(LoadedMouse, &fw, &fh);
     int tw = fw;
@@ -85,17 +106,19 @@ int main(int argc, char* argv[]) {
 
     // Setup font
     TTF_Init();
-    TTF_Font * Font = TTF_OpenFont((path+"/Fonts/Font.ttf").c_str(), 20);
+    TTF_Font * Font = TTF_OpenFont((ResourcePath+"/Fonts/Font.ttf").c_str(), 20);
     TextCharacters * Characters = CreaTextCharacters(Render, Font);
     // TextObject Intro = TextObject("Please enter your username below:", Characters, A_Center, A_Bottom, WindowSize/2, {255, 255, 255, 255}, false);
     // TextObject Nameput = TextObject("", Characters, A_Center, A_Top, WindowSize/2, {255, 255, 255, 255}, true);
 
 
-    Registry * ItemRegistry = CreateRegistry();
-    Registry * EntityRegistry = CreateRegistry();
+    Registry<Entity> * EntityRegistry = new Registry<Entity>(Render, ResourcePath, "Entities");
 
 
-    RegEntity Player = RegEntity(EntityRegistry, "::player", "Player");
+    Register(EntityRegistry, Render, "::player", Entity(Vector2(), Vector2(), 0, SDL_FRect(0, 0, 16, 10), 100, 1));
+
+
+    Entity Player = Create(EntityRegistry, "::player");
 
 
     while (run){
@@ -169,14 +192,16 @@ int main(int argc, char* argv[]) {
         if (MouseStates & SDL_BUTTON_LMASK){
             // Nameput.ConTrySelect(MousePos);
         }
-        MouseStates = SDL_GetMouseState(&MousePos.x, &MousePos.y);
-        Result.x = MousePos.x - (Result.w/2);
-        Result.y = MousePos.y - (Result.h/2);
 
 
+        iVector2 Offset;
+        MouseStates = SDL_GetGlobalMouseState(&MousePos.x, &MousePos.y);
+        SDL_GetWindowPosition(Window, &Offset.x, &Offset.y);
+        Result.x = MousePos.x - (Result.w/2) - Offset.x;
+        Result.y = MousePos.y - (Result.h/2) - Offset.y;
 
-
-
+        Player.Update(deltime);
+        Player.Render(Render);
         SDL_RenderTexture(Render, Mouse, NULL, &Result);
         SDL_RenderPresent(Render);
     }
