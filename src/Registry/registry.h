@@ -1,6 +1,4 @@
 #pragma once
-#include <SDL3/SDL_render.h>
-#include <SDL3/SDL_surface.h>
 #include <vector>
 #include <SDL3/SDL.h>
 #include <string>
@@ -56,7 +54,7 @@ inline bool Register(Registry<T> * registry, SDL_Renderer * Render, std::string 
             }
         }
     }
-    SDL_Surface * LoadS = SDL_LoadBMP(registry->DirectoryPath+"Textures/"+registry->Path+"/"+Name+".bmp");
+    SDL_Surface * LoadS = SDL_LoadBMP((registry->DirectoryPath+"Textures/"+registry->FilePath+"/"+Name+".bmp").c_str());
     if (LoadS){
         data.Texture = SDL_CreateTextureFromSurface(Render, LoadS);
     }

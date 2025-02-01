@@ -2,8 +2,6 @@
 #include "Registry/registry.h"
 #include "Registry/entity.h"
 #include "Vector2.h"
-#include <SDL3/SDL_error.h>
-#include <SDL3/SDL_mouse.h>
 #include <iostream>
 #include <filesystem>
 #ifdef _WIN32
@@ -70,7 +68,7 @@ int main(int argc, char* argv[]) {
     #ifdef _WIN32
     SourcePath = "Resources/Content/";
     #elifdef __APPLE__
-    rpath = "Content/";
+    SourcePath = "Content/";
     #endif
     std::string ResourcePath = SDL_GetBasePathNOS() + SourcePath;
 
@@ -115,7 +113,7 @@ int main(int argc, char* argv[]) {
     Registry<Entity> * EntityRegistry = new Registry<Entity>(Render, ResourcePath, "Entities");
 
 
-    Register(EntityRegistry, Render, "::player", Entity(Vector2(), Vector2(), 0, SDL_FRect(0, 0, 16, 10), 100, 1));
+    Register(EntityRegistry, Render, "::player", Entity(Vector2(), Vector2(), 0, {0, 0, 16, 10}, 100, 1));
 
 
     Entity Player = Create(EntityRegistry, "::player");
