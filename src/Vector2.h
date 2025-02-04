@@ -6,6 +6,8 @@ class Vector2{
 public:
 Vector2(float X = 0, float Y = 0);
 float Magnitude();
+Vector2 Normalize();
+Vector2 Point(Vector2 Target);
 float x;
 float y;
 Vector2& operator+=(Vector2 B);
@@ -19,10 +21,6 @@ Vector2& operator/=(float B);
 inline Vector2::Vector2(float X, float Y){
     x = X;
     y = Y;
-}
-
-inline float Vector2::Magnitude(){
-    return std::sqrt((x*x)+(y*y));
 }
 
 
@@ -185,4 +183,18 @@ inline iVector2& iVector2::operator/=(int B){
     this->x /= B;
     this->y /= B;
     return *this;
+}
+
+
+inline float Vector2::Magnitude(){
+    return std::sqrt((x*x)+(y*y));
+}
+
+inline Vector2 Vector2::Normalize(){
+    float mag = Magnitude();
+    return Vector2(x/mag, y/mag);
+}
+
+inline Vector2 Vector2::Point(Vector2 Target){
+    return Target-Vector2(x, y);
 }

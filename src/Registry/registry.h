@@ -1,4 +1,6 @@
 #pragma once
+#include <SDL3/SDL_render.h>
+#include <iostream>
 #include <vector>
 #include <SDL3/SDL.h>
 #include <string>
@@ -57,6 +59,8 @@ inline bool Register(Registry<T> * registry, SDL_Renderer * Render, std::string 
     SDL_Surface * LoadS = SDL_LoadBMP((registry->DirectoryPath+"Textures/"+registry->FilePath+"/"+Name+".bmp").c_str());
     if (LoadS){
         data.Texture = SDL_CreateTextureFromSurface(Render, LoadS);
+        SDL_GetTextureSize(data.Texture, &data.TextureSize.x, &data.TextureSize.y);
+        SDL_SetTextureScaleMode(data.Texture, SDL_SCALEMODE_NEAREST);
     }
     else{
         data.Texture = registry->Missing;
@@ -64,6 +68,7 @@ inline bool Register(Registry<T> * registry, SDL_Renderer * Render, std::string 
     SDL_DestroySurface(LoadS);
     registry->IDs.push_back(id);
     registry->Data.push_back(data);
+    std::cout << SDL_GetError() << std::endl;
     return true;
 }
 
@@ -89,6 +94,7 @@ inline T GetValueFromRegistry(Registry<T> * registry, std::string id){
             return registry->Data[i];
         }
     }
+    // Add return here eventually
 }
 
 

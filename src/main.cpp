@@ -2,6 +2,7 @@
 #include "Registry/registry.h"
 #include "Registry/entity.h"
 #include "Vector2.h"
+#include <SDL3/SDL_error.h>
 #include <iostream>
 #include <filesystem>
 #ifdef _WIN32
@@ -113,12 +114,11 @@ int main(int argc, char* argv[]) {
     Registry<Entity> * EntityRegistry = new Registry<Entity>(Render, ResourcePath, "Entities");
 
 
-    Register(EntityRegistry, Render, "::player", Entity(Vector2(), Vector2(), 0, {0, 0, 16, 10}, 100, 1));
+    std::cout << Register(EntityRegistry, Render, "::player", Entity(Vector2(100, 100), Vector2(), 0, {0, 0, 16, 10}, 3, 100, 1)) << std::endl;
 
 
     Entity Player = Create(EntityRegistry, "::player");
-
-
+    lastime = SDL_GetPerformanceCounter();
     while (run){
         deltime = (SDL_GetPerformanceCounter() - lastime)/frequency;
         lastime = SDL_GetPerformanceCounter();
@@ -136,7 +136,7 @@ int main(int argc, char* argv[]) {
 
 
                 case SDL_EVENT_KEY_DOWN:
-                    if (e.key.scancode == SDL_SCANCODE_F11) {
+                    if (e.key.key == SDLK_F11) {
                         FullscreenMode = !FullscreenMode;
                         SDL_SetWindowFullscreen(Window, FullscreenMode);
                     }
@@ -198,7 +198,7 @@ int main(int argc, char* argv[]) {
         Result.x = MousePos.x - (Result.w/2) - Offset.x;
         Result.y = MousePos.y - (Result.h/2) - Offset.y;
 
-        Player.Update(deltime);
+        Player.Update(deltime, MousePos, MouseStates, KeyStates);
         Player.Render(Render);
         SDL_RenderTexture(Render, Mouse, NULL, &Result);
         SDL_RenderPresent(Render);
