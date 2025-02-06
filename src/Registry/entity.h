@@ -49,20 +49,26 @@ inline bool Entity::Update(float deltime, Vector2 Mouse, SDL_MouseButtonFlags Mo
 
 
     if (Keystates[SDL_SCANCODE_W]){
-        Velocity += Position.Point(Mouse);
-        Velocity *= .8;
+        Velocity = (Position+Vector2(TextRect.w/2,TextRect.h/2)).Point(Mouse).Normalize() * 100;
+    }
+    else if (Keystates[SDL_SCANCODE_S]){
+        Velocity = Vector2()-((Position+Vector2(TextRect.w/2,TextRect.h/2)).Point(Mouse).Normalize() * 100);
+    }
+    else{
+        Velocity *= pow(.8, (Velocity.Magnitude()) * deltime);
     }
 
 
     Position += Velocity * deltime;
-    Animation += Velocity.Magnitude() * AnimStrength * deltime;
-    Selection.y = fmod(Selection.y + Velocity.Magnitude(), TextureSize.y);
+    Animation = fmod(Animation - (Velocity.Magnitude() * AnimStrength * deltime), - TextureSize.y);
+    Selection.y = (int)(abs(Animation)/Selection.h)*Selection.h;
 
 
     TextRect.x = Position.x;
     TextRect.y = Position.y;
-    Center.x = TextRect.x + (TextRect.w/2);
-    Center.y = TextRect.y + (TextRect.h/2);
+    Center.x = (TextRect.w/2);
+    Center.y = (TextRect.h/2);
+    Angle = (Position+Vector2(TextRect.w/2,TextRect.h/2)).Point(Mouse).Rotation()/M_PI*180;
     return true;
 }
 

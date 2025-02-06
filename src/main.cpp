@@ -3,6 +3,7 @@
 #include "Registry/entity.h"
 #include "Vector2.h"
 #include <SDL3/SDL_error.h>
+#include <SDL3/SDL_render.h>
 #include <iostream>
 #include <filesystem>
 #ifdef _WIN32
@@ -114,7 +115,7 @@ int main(int argc, char* argv[]) {
     Registry<Entity> * EntityRegistry = new Registry<Entity>(Render, ResourcePath, "Entities");
 
 
-    std::cout << Register(EntityRegistry, Render, "::player", Entity(Vector2(100, 100), Vector2(), 0, {0, 0, 16, 10}, 3, 100, 1)) << std::endl;
+    Register(EntityRegistry, Render, "::player", Entity(Vector2(100, 100), Vector2(), 0, {0, 0, 16, 10}, 3, 100, 1));
 
 
     Entity Player = Create(EntityRegistry, "::player");
@@ -195,12 +196,18 @@ int main(int argc, char* argv[]) {
         iVector2 Offset;
         MouseStates = SDL_GetGlobalMouseState(&MousePos.x, &MousePos.y);
         SDL_GetWindowPosition(Window, &Offset.x, &Offset.y);
-        Result.x = MousePos.x - (Result.w/2) - Offset.x;
-        Result.y = MousePos.y - (Result.h/2) - Offset.y;
+        MousePos -= Offset;
+
+
+        Result.x = MousePos.x - (Result.w/2);
+        Result.y = MousePos.y - (Result.h/2);
+
 
         Player.Update(deltime, MousePos, MouseStates, KeyStates);
         Player.Render(Render);
         SDL_RenderTexture(Render, Mouse, NULL, &Result);
+        SDL_SetRenderDrawColor(Render, 255, 0, 0, 255);
+        SDL_RenderPoint(Render, MousePos.x, MousePos.y);
         SDL_RenderPresent(Render);
     }
 
