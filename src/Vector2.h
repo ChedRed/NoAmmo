@@ -289,6 +289,7 @@ inline float Vector2::Magnitude(){
 
 inline Vector2 Vector2::Normalize(){
     float mag = Magnitude();
+    if (mag == 0) return Vector2();
     return Vector2(x/mag, y/mag);
 }
 

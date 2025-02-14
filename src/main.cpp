@@ -115,7 +115,7 @@ int main(int argc, char* argv[]) {
     Registry<Entity> * EntityRegistry = new Registry<Entity>(Render, ResourcePath, "Entities");
 
 
-    Register(EntityRegistry, Render, "::player", Entity(Vector2(100, 100), Vector2(), 0, {0, 0, 16, 10}, 3, 100, 1));
+    Register(EntityRegistry, Render, "::player", Entity(Vector2(100, 100), Vector2(), 0, {0, 0, 16, 10}, 3, 100));
 
 
     Entity Player = Create(EntityRegistry, "::player");
@@ -206,8 +206,6 @@ int main(int argc, char* argv[]) {
         Player.Update(deltime, MousePos, MouseStates, KeyStates);
         Player.Render(Render);
         SDL_RenderTexture(Render, Mouse, NULL, &Result);
-        SDL_SetRenderDrawColor(Render, 255, 0, 0, 255);
-        SDL_RenderPoint(Render, MousePos.x, MousePos.y);
         SDL_RenderPresent(Render);
     }
 
