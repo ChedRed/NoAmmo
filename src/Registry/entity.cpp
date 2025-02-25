@@ -51,7 +51,7 @@ bool Entity::Update(float deltime, Vector2 Mouse, SDL_MouseButtonFlags MouseStat
 
 
     Position += Velocity * deltime;
-    Animation = fmod((Animation * (Velocity.Normalize().x*((Position+Vector2(TextRect.w/2,TextRect.h/2)).Point(Mouse).Normalize().x))+(Velocity.Normalize().y*((Position+Vector2(TextRect.w/2,TextRect.h/2)).Point(Mouse).Normalize().y)))+ (Velocity.Magnitude() * AnimStrength * Scale * Selection.h / Selection.w * deltime), TextureSize.y);
+    Animation = fmod(Animation + ((Velocity.Magnitude() * AnimStrength * Scale * Selection.h * deltime) * ((Velocity.Normalize().x*((Position+Vector2(TextRect.w/2,TextRect.h/2)).Point(Mouse).Normalize().x))+(Velocity.Normalize().y*((Position+Vector2(TextRect.w/2,TextRect.h/2)).Point(Mouse).Normalize().y)))), TextureSize.y);
     Selection.y = (int)(abs(Animation)/Selection.h)*Selection.h;
 
 
